@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>اسم العلامة التجارية</title>
+
+    <!-- CSS FILES -->
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/popup.css" />
+    <!-- STYLE COLORS -->
+    <style>
+      :root {
+        color: black; /* <-- TEXT COLOR FOR THE ENTIRE PAGE */
+
+        --b-color: #e5e7eb; /* <-- BORDER COLOR VARIABLE */
+      }
+
+      /* BACKGROUND COLOR FOR THE CURRENT LANGUAGE BUTTON WHEN THE LANGUAGES MENU IS OPEN */
+      #main-header #languages.active #lang-btn {
+        background-color: whitesmoke;
+      }
+
+      /* BOTTOM BORDER COLOR FOR THE ACTIVE CATEGORY LINK */
+      #categories-section > nav > a.active {
+        border-bottom-color: #ec198c;
+      }
+
+      /* COLOR OF THE POPUP CLOSE BUTTON ICON */
+      #popup .popup-content-container #close-btn {
+        fill: black;
+      }
+
+      /* OVERRIDES FOR THE DISH DETAILS POPUP CLOSE BUTTON */
+      #popup .dish-details #close-btn {
+        fill: white; /* <-- ICON COLOR */
+        background-color: rgba(0, 0, 0, 0.25); /* <-- BACKGROUND COLOR */
+      }
+    </style>
+  </head>
+
+  <body style="background-color: white">
+    <header id="main-header" style="background-color: white">
+      <div class="container-margin">
+        <a id="logo" href="#">
+          <img
+            alt="logo"
+            fetchpriority="high"
+            decoding="async"
+            src="../assets/icons/qr-breeze-logo.png"
+          />
+          <p>اسم العلامة التجارية</p>
+        </a>
+
+        <div id="languages">
+          <button id="lang-btn">
+            <p>عربي</p>
+            <svg viewBox="0 0 20 20" fill="#624D47">
+              <path
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+
+          <nav id="lang-menu">
+            <a href="./index-en.html">English</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="banner-section">
+        <div class="slider">
+          <div class="images" aria-label="Banner Images">
+            <img
+              alt="Banner"
+              fetchpriority="high"
+              decoding="async"
+              src="../assets/banner-images/banner-1.jpg"
+            />
+
+            <img
+              alt="Banner"
+              fetchpriority="high"
+              decoding="async"
+              src="../assets/banner-images/banner-2.jpg"
+            />
+
+            <img
+              alt="Banner"
+              fetchpriority="high"
+              decoding="async"
+              src="../assets/banner-images/banner-3.jpg"
+            />
+          </div>
+
+          <nav class="nav-buttons" aria-label="Images Navigation">
+            <button id="prev" aria-label="Previous Image">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                <path
+                  style="fill: white"
+                  d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z"
+                />
+              </svg>
+            </button>
+            <button id="next" aria-label="Next Image">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                <path
+                  style="fill: white"
+                  d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z"
+                />
+              </svg>
+            </button>
+          </nav>
+
+          <ul class="indicators" aria-label="Images Indicators">
+            <!-- INDICATORS ARE ADDED DYNAMICALLY USING JAVASCRIPT -->
+          </ul>
+        </div>
+      </section>
+
+      <section id="categories-section" style="background-color: white">
+        <button id="menu-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            width="16"
+          >
+            <path
+              d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"
+            />
+          </svg>
+        </button>
+
+        <nav class="hide-scrollbar">
+          <a class="active" href="#bestsellers" title="Bestsellers">
+            الأكثر مبيعاً 🔥
+          </a>
+          <a href="#shawarma" title="Shawarma">شاورما</a>
+          <a href="#burger" title="Burger">برجر</a>
+          <a href="#pasta" title="Pasta">باستا</a>
+          <a href="#seafood" title="Seafood">اصناف بحرية</a>
+          <a href="#juices" title="Juices">عصيرات</a>
+          <a href="#soft-drinks" title="Soft Drinks"> مشروبات غازية </a>
+        </nav>
+      </section>
+
+      <section id="food-sections" class="container-margin">
+        <section id="bestsellers">
+          <h1>الأكثر مبيعاً 🔥</h1>
+
+          <div>
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/burger-4.png"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">برجر دجاج</h2>
+                  <p class="dish-price">24 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/shawarma-2.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">صحن شاورما صغير</h2>
+                  <p class="dish-price">14 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/pasta-1.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">لازانيا</h2>
+                  <p class="dish-price">24 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a! Lorem ipsum
+                    dolor sit amet consectetur adipisicing elit. Voluptatum illo
+                    ducimus praesentium est deleniti atque ab mollitia
+                    aspernatur! Eaque mollitia et inventore quisquam debitis
+                    molestiae? Deserunt rem consequuntur laudantium repudiandae?
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Quod nobis fugit minima numquam vero perspiciatis
+                    consequuntur sequi iste, praesentium, eligendi ullam commodi
+                    reprehenderit blanditiis a nam eos assumenda corporis dicta.
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+          </div>
+        </section>
+
+        <section id="shawarma">
+          <h1>شاورما</h1>
+
+          <div>
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/shawarma-2.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">صحن شاورما صغير</h2>
+                  <p class="dish-price">14 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/shawarma-1.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">صحن شاورما كبير</h2>
+                  <p class="dish-price">19 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/shawarma-sand.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">شاورما صاروخ صغير</h2>
+                  <p class="dish-price">7 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/shawarma-sand-l.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">شاورما صاروخ كبير</h2>
+                  <p class="dish-price">10 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+          </div>
+        </section>
+
+        <section id="burger">
+          <h1>برجر</h1>
+
+          <div>
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/burger-1.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">برجر لحم</h2>
+                  <p class="dish-price">29 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/burger-4.png"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">برجر دجاج</h2>
+                  <p class="dish-price">24 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/burger-2.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">دبل برجر كلاسيك</h2>
+                  <p class="dish-price">25 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/burger-3.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">دبل برجر</h2>
+                  <p class="dish-price">27 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+          </div>
+        </section>
+
+        <section id="pasta">
+          <h1>باستا</h1>
+
+          <div>
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/pasta-1.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">لازانيا</h2>
+                  <p class="dish-price">24 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/pasta-2.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">باشاميل</h2>
+                  <p class="dish-price">26 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/pasta-3.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">باستا بالجبن</h2>
+                  <p class="dish-price">25 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+          </div>
+        </section>
+
+        <section id="seafood">
+          <h1>مأكولات بحرية</h1>
+
+          <div>
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/seafood-1.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">سالامون</h2>
+                  <p class="dish-price">32 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/seafood-2.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">طبق مأكولات بحرية مشكلة</h2>
+                  <p class="dish-price">119 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+          </div>
+        </section>
+
+        <section id="juices">
+          <h1>العصيرات الطبيعية</h1>
+
+          <div>
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/juice-1.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">عصير فراولة</h2>
+                  <p class="dish-price">10 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/juice-2.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">عصير ليمون</h2>
+                  <p class="dish-price">8 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/juice-3.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">عصير برتقال</h2>
+                  <p class="dish-price">9 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/juice-4.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">سموذي حمضيات</h2>
+                  <p class="dish-price">12 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/juice-5.jpg"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">سموذي عنب</h2>
+                  <p class="dish-price">13 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+          </div>
+        </section>
+
+        <section id="soft-drinks">
+          <h1>المشروبات الغازية</h1>
+
+          <div>
+            <button class="dish-card">
+              <figure>
+                <div class="img-container">
+                  <img
+                    alt="Dish Image"
+                    fetchpriority="high"
+                    decoding="async"
+                    src="../assets/menu-items/soft-drinks.png"
+                  />
+                </div>
+
+                <figcaption>
+                  <h2 class="dish-title">أي نوع من المشروبات</h2>
+                  <p class="dish-price">3 SR</p>
+
+                  <!-- 
+                    THE NEXT ELEMENT WITH THE "dish-description" CLASS WILL BE HIDDEN,
+                    ITS PURPOSE IS TO USE THE TEXT INSIDE IT WHEN CLICKING ON THE DISH CARD.
+                   -->
+                  <span hidden class="dish-description">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. A,
+                    hic dolores. Mollitia laboriosam rem dignissimos animi
+                    consequatur. Doloribus voluptate quod expedita? Nostrum
+                    harum adipisci velit tenetur sed cum minima a!
+                  </span>
+                </figcaption>
+              </figure>
+            </button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <!-- POPUP -->
+    <div id="popup">
+      <div
+        class="popup-content-container lg-container-margin"
+        style="background-color: white"
+      >
+        <button id="close-btn">
+          <svg viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+            ></path>
+          </svg>
+        </button>
+        <!-- 
+          THE REST OF THE CONTENT OF THIS POPUP WILL BE ADDED USING JAVASCRIPT,
+          BECAUSE THIS POPUP IS REUSABLE 
+        -->
+      </div>
+    </div>
+
+    <footer id="main-footer" style="background-color: whitesmoke">
+      <section id="location-and-contacts">
+        <section class="sub-section">
+          <h1>
+            موقع
+            <svg
+              style="width: 1rem; display: inline; fill: #f44336"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 384 512"
+            >
+              <path
+                d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+              />
+            </svg>
+            الفرع
+          </h1>
+
+          <p>جدة, البساتين, السعودية</p>
+        </section>
+
+        <hr class="sub-section-break" />
+
+        <section class="sub-section">
+          <h1>تواصل معنا</h1>
+
+          <p class="contacts">
+            <span>
+              <svg
+                style="width: 1rem; display: inline"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+              >
+                <path
+                  d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zm90.7 96.7c9.7-2.6 19.9 2.3 23.7 11.6l20 48c3.4 8.2 1 17.6-5.8 23.2L168 231.7c16.6 35.2 45.1 63.7 80.3 80.3l20.2-24.7c5.6-6.8 15-9.2 23.2-5.8l48 20c9.3 3.9 14.2 14 11.6 23.7l-12 44C336.9 378 329 384 320 384C196.3 384 96 283.7 96 160c0-9 6-16.9 14.7-19.3l44-12z"
+                />
+              </svg>
+
+              +966 53 101 3154
+            </span>
+
+            <span>
+              <svg
+                style="width: 1rem; display: inline"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+              >
+                <path
+                  d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM218 271.7L64.2 172.4C66 156.4 79.5 144 96 144l256 0c16.5 0 30 12.4 31.8 28.4L230 271.7c-1.8 1.2-3.9 1.8-6 1.8s-4.2-.6-6-1.8zm29.4 26.9L384 210.4 384 336c0 17.7-14.3 32-32 32L96 368c-17.7 0-32-14.3-32-32l0-125.6 136.6 88.2c7 4.5 15.1 6.9 23.4 6.9s16.4-2.4 23.4-6.9z"
+                />
+              </svg>
+
+              <a href="mailto:temporary@gmail.com">temporary@gmail.com</a>
+            </span>
+          </p>
+        </section>
+      </section>
+
+      <section id="social-media">
+        <section class="sub-section">
+          <h1>حمل التطبيق</h1>
+
+          <div class="links">
+            <a
+              style="width: 7rem"
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              title="App Store"
+            >
+              <img
+                style="object-fit: contain"
+                alt="app store"
+                decoding="async"
+                width="170"
+                height="64"
+                src="../assets/icons/apple-store-logo.svg"
+              />
+            </a>
+
+            <a
+              style="width: 7rem"
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              title="Google Play"
+            >
+              <img
+                style="object-fit: contain"
+                alt="google play"
+                decoding="async"
+                width="175"
+                height="64"
+                src="../assets/icons/google-play-logo.svg"
+              />
+            </a>
+          </div>
+        </section>
+
+        <hr class="sub-section-break" />
+
+        <section class="sub-section">
+          <h1>تابعنا على</h1>
+
+          <div class="links">
+            <a href="#" target="_blank" rel="noreferrer" title="Instagram">
+              <img
+                alt="instagram"
+                decoding="async"
+                width="25"
+                height="25"
+                src="../assets/icons/social/Instagram-logo.svg"
+              />
+            </a>
+
+            <a href="#" target="_blank" rel="noreferrer" title="Facebook">
+              <img
+                alt="facebook"
+                decoding="async"
+                width="25"
+                height="25"
+                src="../assets/icons/social/facebook-logo.svg"
+              />
+            </a>
+
+            <a href="#" target="_blank" rel="noreferrer" title="X">
+              <img
+                alt="X"
+                decoding="async"
+                width="25"
+                height="25"
+                src="../assets/icons/social/x-logo.svg"
+              />
+            </a>
+
+            <a href="#" target="_blank" rel="noreferrer" title="Linkedin">
+              <img
+                alt="linkedin"
+                decoding="async"
+                width="25"
+                height="25"
+                src="../assets/icons/social/linkedin-logo.svg"
+              />
+            </a>
+
+            <a href="#" target="_blank" rel="noreferrer" title="Youtube">
+              <img
+                alt="youtube"
+                decoding="async"
+                width="25"
+                height="25"
+                src="../assets/icons/social/youtube-logo.svg"
+              />
+            </a>
+          </div>
+        </section>
+      </section>
+
+      <section id="copyright">
+        <small>
+          &copy; Copyright <strong>QRbreeze</strong> جميع الحقوق محفوظة
+        </small>
+      </section>
+    </footer>
+
+    <!-- JS FILES -->
+    <script src="../js/libs/hammer.min.js"></script>
+    <script src="../js/main.js"></script>
+  </body>
+</html>
