@@ -402,16 +402,16 @@ function categoriesSection() {
             }
           }
         });
-      }, 35);
+      }, 30);
     });
   };
 
-  // FUNCTION THAT ACTIVATES THE CATEGORY MENU BUTTON
-  const activateCategoryMenuBtn = () => {
-    const menuBtn = document.getElementById("menu-btn");
+  // FUNCTION THAT ACTIVATES THE CATEGORY SEARCH BUTTON
+  const activateCategorySearchBtn = () => {
+    const searchBtn = document.getElementById("search-btn");
     const isLtr = document.dir === "ltr";
 
-    if (!menuBtn) {
+    if (!searchBtn) {
       console.error("Menu button not found!");
       return;
     }
@@ -422,14 +422,38 @@ function categoriesSection() {
       const popupTitle = document.createElement("h1");
       popupTitle.textContent = isLtr ? "Menu Categories" : "اصناف القائمة";
 
+      // CREATE SEARCH BOX & CLEAR SEARCH BUTTON & "NO RESULTS" MESSAGE
+      const noResultsMessage = document.createElement("div");
+      const searchContainer = document.createElement("div");
+      const searchBox = document.createElement("input");
+      const clearSearchBtn = document.createElement("button");
+
+      noResultsMessage.id = "no-results-msg";
+      searchContainer.classList.add("search-container");
+      searchBox.classList.add("search-box");
+
+      noResultsMessage.textContent = isLtr ? "No results" : "لا توجد نتائج";
+      searchBox.type = "text";
+      searchBox.placeholder = isLtr
+        ? "Search menu categories"
+        : "ابحث في اصناف القائمة";
+      searchBox.ariaLabel = isLtr // <-- aria-label IMPROVES THE EXPERIENCE FOR USERS WHO RELY ON SCREEN READERS
+        ? "Search menu categories"
+        : "ابحث في اصناف القائمة";
+      clearSearchBtn.innerHTML = "↻";
+      clearSearchBtn.ariaLabel = "Clear search";
+
+      searchContainer.append(searchBox, clearSearchBtn);
+
       // CREATE NAVIGATION LINKS CONTAINER
       const navLinks = document.createElement("nav");
       navLinks.className = "hide-scrollbar";
 
-      // IMPROVE PERFORMANCE BY USING "DocumentFragment"
-      const linksFragment = document.createDocumentFragment();
-
       // CREATE MENU LINKS WITH SECTION INFO (NAME & ITEM COUNT)
+      const linksFragment = document.createDocumentFragment(); // <-- IMPROVE PERFORMANCE BY USING "DocumentFragment"
+      const cleanText = (text) =>
+        text.replace(/[^\p{L}\p{N}]+/gu, "").toLowerCase(); // <-- FUNCTION THAT CLEANS TEXT FROM SPACES & SYMBOLS IN ORDER TO IMPROVE SEARCH ACCURACY
+
       foodSections.forEach((section) => {
         const secId = section.id;
         const secName = section.querySelector("h1").textContent;
@@ -440,12 +464,9 @@ function categoriesSection() {
         const countSpan = document.createElement("span");
 
         link.href = `#${secId}`;
-        link.title = secId
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
+        link.ariaLabel = secName;
+        link.dataset.cleanText = cleanText(secName);
         nameSpan.textContent = secName;
-        countSpan.dir = "ltr";
         countSpan.textContent = `${itemCount} ${
           isLtr ? `item${itemCount > 1 ? "s" : ""}` : ":العناصر"
         }`;
@@ -454,11 +475,45 @@ function categoriesSection() {
         linksFragment.appendChild(link);
       });
 
-      navLinks.appendChild(linksFragment); // <-- APPEND LINKS TO NAVIGATION
+      navLinks.append(noResultsMessage, linksFragment); // <-- APPEND "NO RESULTS" MESSAGE & LINKS TO NAVIGATION
 
+      // ENABLE SEARCH WITH DEBOUNCE
+      const links = Array.from(navLinks.children).filter(
+        (child) => child.tagName === "A"
+      );
+
+      let debounceTimer;
+      function processingSearchInputs(inputs = "") {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          const query = cleanText(inputs);
+          let hasResults = false;
+
+          links.forEach((link) => {
+            const match = link.dataset.cleanText.includes(query);
+            link.classList.toggle("hidden", !match);
+            if (match) hasResults = true;
+          });
+
+          clearSearchBtn.classList.toggle("show", inputs.length > 0);
+          noResultsMessage.classList.toggle("show", !hasResults);
+        }, 200); // <-- DELAY FOR DEBOUNCE
+      }
+
+      searchBox.oninput = function () {
+        processingSearchInputs(this.value);
+      };
+
+      clearSearchBtn.onclick = () => {
+        processingSearchInputs();
+        searchBox.value = "";
+        searchBox.focus();
+      };
+
+      // ...
       return {
         containerClass: "category-menu",
-        arrOfContainerContent: [popupTitle, navLinks],
+        arrOfContainerContent: [popupTitle, searchContainer, navLinks],
         scrollElement: navLinks,
       };
     })();
@@ -467,8 +522,8 @@ function categoriesSection() {
     const categoryLinksMenu = popup(popupContent);
 
     // ADD LISTENERS
-    // - OPEN THE CATEGORY MENU POPUP WHEN CLICKING ON CATEGORY MENU BUTTON
-    menuBtn.onclick = categoryLinksMenu.open;
+    // - OPEN THE CATEGORY MENU POPUP WHEN CLICKING ON CATEGORY SEARCH BUTTON
+    searchBtn.onclick = categoryLinksMenu.open;
 
     // - CLOSE THE CATEGORY MENU POPUP WHEN CLICKING ON ANY NAVIGATION LINK INSIDE IT
     popupContent.scrollElement.onclick = (e) => {
@@ -477,7 +532,7 @@ function categoriesSection() {
   };
 
   activateCategoryLinks();
-  activateCategoryMenuBtn();
+  activateCategorySearchBtn();
 }
 
 // FOOD SECTION

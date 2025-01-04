@@ -87,6 +87,44 @@
   margin-bottom: 1rem;
 }
 
+#popup .category-menu .search-container {
+  width: 100%;
+  padding-inline: var(--space);
+  margin-bottom: var(--space);
+  position: relative;
+}
+
+#popup .category-menu .search-container .search-box {
+  width: 100%;
+  padding: var(--space-sm);
+  font-family: monospace;
+  font-weight: var(--font-w-semibold);
+  font-size: var(--font-sm);
+  line-height: var(--l-h-sm);
+  border-width: var(--b-width-2);
+  border-radius: var(--b-radius-2xl);
+}
+
+#popup .category-menu .search-container button {
+  padding: var(--space-sm) 0.9rem;
+  position: absolute;
+  top: 0;
+  inset-inline-end: var(--space);
+  display: none;
+}
+
+#popup .category-menu .search-container button.show,
+#popup .category-menu > nav #no-results-msg.show {
+  display: inline-block;
+}
+
+#popup .category-menu > nav #no-results-msg {
+  display: none;
+  color: gray;
+  padding: var(--space);
+  font-weight: var(--font-w-semibold);
+}
+
 #popup .category-menu > nav {
   font-weight: var(--font-w-bold);
   font-size: var(--font-sm);
@@ -115,6 +153,7 @@
   font-size: var(--font-xs);
   line-height: var(--l-h-xs);
   text-transform: lowercase;
+  direction: ltr;
 }
 
 /* DISH DETAILS CONTENT STYLE */
