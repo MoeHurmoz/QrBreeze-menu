@@ -510,7 +510,7 @@ function categoriesSection() {
         searchBox.focus();
       };
 
-      // ...
+      // RETURN THE CONFIGURED CONTENT & ELEMENTS FOR THE POPUP
       return {
         containerClass: "category-menu",
         arrOfContainerContent: [popupTitle, searchContainer, navLinks],
