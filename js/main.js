@@ -182,108 +182,125 @@ function activateSlider({
 function popup({
   containerClass,
   arrOfContainerContent,
-  scrollElement = undefined,
+  scrollElement = undefined, // <-- TODO: NOT USED YET
 }) {
   const popup = document.getElementById("popup");
   const contentContainer = popup.querySelector(".popup-content-container");
   const closeBtn = document.getElementById("close-btn");
 
-  // GET THE POPUP'S TRANSITION DURATION FROM ITS CSS VARIABLE
-  const transitionDuration = parseFloat(
-    getComputedStyle(popup).getPropertyValue("--transition-duration")
-  );
+  let isClosing = false;
+  let isDragging = false;
 
-  if (!popup || !contentContainer) {
-    console.error("Popup or content container not found!");
-    return;
-  }
+  const handleClose = () => {
+    if (isClosing) return;
 
-  const popupCloseEvent = (event) => {
-    if (
-      event.target === event.currentTarget ||
-      closeBtn.contains(event.target)
-    ) {
-      openPopup(false);
-    }
+    isClosing = true;
+    document.body.style.overflow = "";
+    popup.classList.remove("active");
+
+    // LISTEN FOR THE TRANSITION END BEFORE REMOVING CONTENT
+    const handleTransitionEnd = () => {
+      contentContainer.classList.remove(containerClass);
+      while (
+        contentContainer.lastChild &&
+        contentContainer.lastChild !== closeBtn
+      ) {
+        contentContainer.removeChild(contentContainer.lastChild);
+      }
+      isClosing = false;
+      isDragging = false;
+      contentContainer.style.transform = "";
+      contentContainer.removeEventListener(
+        "transitionend",
+        handleTransitionEnd
+      );
+    };
+
+    contentContainer.addEventListener("transitionend", handleTransitionEnd, {
+      once: true,
+    });
   };
 
-  const openPopup = (open = true) => {
-    contentContainer.style.transform = ""; // <-- RESET "contentContainer" POSITION
-    document.body.classList.toggle("no-scroll", open);
-    popup.classList.toggle("active", open);
+  const handleDrag = (() => {
+    let startY = 0;
 
-    if (open) {
-      // ADD CONTENT INSIDE "contentContainer" & THE CLOSE POPUP EVENT
+    const onStart = (e) => {
+      if (isClosing) return;
+      isDragging = true;
+      startY = e.center.y;
+      contentContainer.style.transition = "none";
+    };
+
+    const onMove = (e) => {
+      if (!isDragging || isClosing) return;
+
+      const deltaY = e.center.y - startY;
+
+      // IF SCROLLING UP, REDUCE THE MOVEMENT
+      if (deltaY < 0) {
+        contentContainer.style.transform = `translateY(${deltaY * 0.2}px)`;
+      } else {
+        contentContainer.style.transform = `translateY(${deltaY}px)`;
+      }
+    };
+
+    const onEnd = (e) => {
+      if (!isDragging || isClosing) return;
+      isDragging = false;
+
+      const deltaY = e.center.y - startY;
+      const velocity = e.velocityY;
+
+      contentContainer.style.transition = "";
+
+      // IF DRAGGED DOWN ENOUGH OR WITH ENOUGH VELOCITY
+      if (deltaY > 100 || velocity > 0.3) {
+        if (deltaY > 0) {
+          // ONLY IF DRAGGING DOWNWARD
+          contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
+          handleClose();
+        } else {
+          contentContainer.style.transform = "";
+        }
+      } else {
+        contentContainer.style.transform = "";
+      }
+    };
+
+    return { onStart, onMove, onEnd };
+  })();
+
+  // EVENT LISTENER TO CLOSE THE POPUP WHEN CLICKING ON THE BACKGROUND OR THE CLOSE BUTTON
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup || e.target === closeBtn) {
+      contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
+      handleClose();
+    }
+  });
+
+  // SETUP HAMMER.JS LIBRARY
+  const hammer = new Hammer(contentContainer);
+  hammer.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL });
+
+  hammer.on("panstart", handleDrag.onStart);
+  hammer.on("panmove", handleDrag.onMove);
+  hammer.on("panend pancancel", handleDrag.onEnd);
+
+  // RETURNS THE API TO CONTROL OPENING & CLOSING THE POPUP
+  return {
+    open: () => {
+      isClosing = false;
+      isDragging = false;
+      contentContainer.style.transform = "";
+      document.body.style.overflow = "hidden"; /* <-- PREVENTS SCROLLING */
+      popup.classList.add("active");
       contentContainer.classList.add(containerClass);
       contentContainer.append(...arrOfContainerContent);
-      popup.addEventListener("click", popupCloseEvent);
-    } else {
-      // REMOVE THE CONTENT INSIDE "contentContainer" WITHOUT REMOVING THE STATIC CONTENT, AFTER THE POPUP TRANSITION DURATION
-      setTimeout(() => {
-        contentContainer.classList.remove(containerClass);
-
-        while (
-          contentContainer.lastChild &&
-          contentContainer.lastChild !== closeBtn
-        ) {
-          contentContainer.removeChild(contentContainer.lastChild);
-        }
-      }, transitionDuration);
-
-      // REMOVE THE CLOSE POPUP EVENT
-      popup.removeEventListener("click", popupCloseEvent);
-    }
-  };
-
-  // FUNCTION THAT ENABLES CLOSING THE POPUP BY DRAGGING IT DOWN USING THE HAMMER.JS LIBRARY
-  const enableGestures = () => {
-    const hammer = new Hammer(contentContainer);
-    hammer.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL });
-
-    let startY = 0; // <-- VARIABLE TO STORE THE STARTING POSITION OF THE DRAG
-    let animationFrameId = null; // <-- VARIABLE TO TRACK THE ANIMATION FRAME ID
-
-    // LISTEN FOR THE START OF THE PAN
-    hammer.on("panstart", () => {
-      contentContainer.style.transition = "none"; // <-- DISABLE TRANSITIONS FOR SMOOTH DRAGGING
-      startY = contentContainer.offsetTop; // <-- STORE THE INITIAL POSITION OF THE "contentContainer"
-    });
-
-    // LISTEN FOR MOVEMENT DURING THE PAN
-    hammer.on("panmove", (event) => {
-      if (animationFrameId) return;
-
-      const newY = startY + event.deltaY;
-      const isAtTop = scrollElement?.scrollTop === 0;
-
-      // ALLOW MOVEMENT ONLY IF THE DRAG IS DOWNWARDS & CONDITIONS ARE MET
-      if (newY > 0 && (isAtTop || !scrollElement?.contains(event.target))) {
-        // USE REQUESTANIMATIONFRAME FOR BETTER PERFORMANCE
-        animationFrameId = requestAnimationFrame(() => {
-          contentContainer.style.transform = `translateY(${newY}px)`; // <-- APPLY THE NEW POSITION TO THE "contentContainer"
-          animationFrameId = null; // <-- RESET THE ANIMATION FRAME ID
-        });
-      }
-    });
-
-    // LISTEN FOR THE END OF THE PAN
-    hammer.on("panend", (event) => {
-      contentContainer.style.transition = ""; // <-- RE-ENABLE TRANSITIONS
-      contentContainer.style.transform = ""; // <-- RESET "contentContainer" POSITION
-
-      // IF DRAG IS SUFFICIENT ENOUGH
-      if (event.deltaY > 100 || event.velocityY > 0.3) {
-        openPopup(false); // <-- CLOSE THE POPUP
-      }
-    });
-  };
-
-  enableGestures();
-
-  // RETURN AN INTERFACE FOR MANUAL CONTROL OF OPENING & CLOSING THE POPUP
-  return {
-    open: () => openPopup(true),
-    close: () => openPopup(false),
+    },
+    close: () => {
+      contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
+      handleClose();
+    },
   };
 }
 

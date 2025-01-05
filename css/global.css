@@ -157,10 +157,6 @@ body {
   display: none; /* Chrome, Safari */
 }
 
-.no-scroll {
-  overflow: hidden !important; /* PREVENTS SCROLLING */
-}
-
 .hidden {
   display: none !important;
 }
