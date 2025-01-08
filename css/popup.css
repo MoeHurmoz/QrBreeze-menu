@@ -1,5 +1,5 @@
 #popup {
-  --transition-duration: 300ms; /* <-- DON'T REMOVE THIS VARIABLE, ITS VALUE IS USED IN JS INSIDE THE POPUP FUNCTION */
+  --transition-duration: 300ms;
 
   visibility: hidden;
   position: fixed;
@@ -73,13 +73,13 @@
   transform: translateY(0);
 }
 
-/* CATEGORY MENU CONTENT STYLE */
-#popup .category-menu {
+/* STYLING THE CONTENT FOR THE CATEGORIES SEARCH POPUP */
+#popup .categories-search {
   text-align: center;
   text-transform: capitalize;
 }
 
-#popup .category-menu > h1 {
+#popup .categories-search .popup-title {
   font-weight: var(--font-w-bold);
   font-size: var(--font-base);
   line-height: var(--l-h-base);
@@ -87,16 +87,18 @@
   margin-bottom: 1rem;
 }
 
-#popup .category-menu .search-container {
+#popup .categories-search .search-container {
   width: 100%;
   padding-inline: var(--space);
-  margin-bottom: var(--space);
+  padding-bottom: var(--space);
+  border-bottom-width: var(--b-width);
   position: relative;
 }
 
-#popup .category-menu .search-container .search-box {
+#popup .categories-search .search-container .search-box {
   width: 100%;
-  padding: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  padding-inline-start: calc(var(--space) * 1.9);
   font-family: monospace;
   font-weight: var(--font-w-semibold);
   font-size: var(--font-sm);
@@ -105,38 +107,44 @@
   border-radius: var(--b-radius-2xl);
 }
 
-#popup .category-menu .search-container button {
-  padding: var(--space-sm) 0.9rem;
+#popup .categories-search .search-container > svg {
+  position: absolute;
+  top: calc(var(--space) - 0.5rem);
+  inset-inline-start: calc(var(--space) * 1.7);
+}
+
+#popup .categories-search .search-container .clear-btn {
+  padding: var(--space-xs) 0.9rem;
   position: absolute;
   top: 0;
   inset-inline-end: var(--space);
   display: none;
 }
 
-#popup .category-menu .search-container button.show,
-#popup .category-menu > nav #no-results-msg.show {
+#popup .categories-search .search-container .clear-btn.show,
+#popup .categories-search .no-results-msg.show {
   display: inline-block;
 }
 
-#popup .category-menu > nav #no-results-msg {
+#popup .categories-search .no-results-msg {
   display: none;
   color: gray;
   padding: var(--space);
   font-weight: var(--font-w-semibold);
 }
 
-#popup .category-menu > nav {
+#popup .categories-search > nav {
   font-weight: var(--font-w-bold);
   font-size: var(--font-sm);
   line-height: var(--l-h-sm);
   text-wrap: nowrap;
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  max-height: calc(100% - (var(--space) * 7.2));
   overflow-y: auto;
 }
 
-#popup .category-menu > nav > a {
+#popup .categories-search > nav > a {
   padding: var(--space);
   border-bottom-width: var(--b-width);
   display: flex;
@@ -144,11 +152,11 @@
   justify-content: space-between;
 }
 
-#popup .category-menu > nav > a:last-child {
+#popup .categories-search > nav > a:last-child {
   border-bottom-width: 0;
 }
 
-#popup .category-menu > nav > a > span:last-child {
+#popup .categories-search > nav > a > span:last-child {
   font-weight: var(--font-w-extralight);
   font-size: var(--font-xs);
   line-height: var(--l-h-xs);
@@ -156,7 +164,7 @@
   direction: ltr;
 }
 
-/* DISH DETAILS CONTENT STYLE */
+/* STYLING THE CONTENT FOR THE DISH DETAILS POPUP */
 #popup .dish-details {
   display: grid;
   grid-template-rows: 1.1fr 2fr;

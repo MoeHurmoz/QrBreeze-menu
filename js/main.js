@@ -236,10 +236,8 @@ function popup({
 
       const deltaY = e.center.y - startY;
 
-      // IF SCROLLING UP, REDUCE THE MOVEMENT
-      if (deltaY < 0) {
-        contentContainer.style.transform = `translateY(${deltaY * 0.2}px)`;
-      } else {
+      // ONLY APPLY TRANSFORM FOR DOWNWARD MOVEMENT
+      if (deltaY > 0) {
         contentContainer.style.transform = `translateY(${deltaY}px)`;
       }
     };
@@ -253,15 +251,10 @@ function popup({
 
       contentContainer.style.transition = "";
 
-      // IF DRAGGED DOWN ENOUGH OR WITH ENOUGH VELOCITY
-      if (deltaY > 100 || velocity > 0.3) {
-        if (deltaY > 0) {
-          // ONLY IF DRAGGING DOWNWARD
-          contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
-          handleClose();
-        } else {
-          contentContainer.style.transform = "";
-        }
+      // ONLY CHECK FOR DOWNWARD MOVEMENT
+      if (deltaY > 100 || (velocity > 0.3 && deltaY > 0)) {
+        contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
+        handleClose();
       } else {
         contentContainer.style.transform = "";
       }
@@ -426,47 +419,41 @@ function categoriesSection() {
   // FUNCTION THAT ACTIVATES THE CATEGORY SEARCH BUTTON
   const activateCategorySearchBtn = () => {
     const searchBtn = document.getElementById("search-btn");
-    const isLtr = document.dir === "ltr";
 
     if (!searchBtn) {
-      console.error("Menu button not found!");
+      console.error("Search button not found!");
       return;
     }
 
-    // FUNCTION THAT CREATES CATEGORY MENU CONTENT FOR THE POPUP (IT'S RUN DIRECTLY TO RETURN & STORE THE RESULT)
+    // FUNCTION THAT CREATES THE CONTENT OF THE CATEGORIES SEARCH POPUP (IT'S RUN DIRECTLY TO RETURN & STORE THE RESULT)
     const popupContent = (() => {
-      // CREATE POPUP TITLE BASED ON LANGUAGE
-      const popupTitle = document.createElement("h1");
-      popupTitle.textContent = isLtr ? "Menu Categories" : "اصناف القائمة";
+      // GET STATIC ELEMENTS
+      const staticElements = document.getElementById(
+        "static-search-popup-elements"
+      );
+      const popupTitle = staticElements.querySelector(".popup-title");
+      const searchContainer = staticElements.querySelector(".search-container");
+      const searchBox = searchContainer.querySelector(".search-box");
+      const clearSearchBtn = searchContainer.querySelector(".clear-btn");
+      const noResultsMessage = staticElements.querySelector(".no-results-msg");
 
-      // CREATE SEARCH BOX & CLEAR SEARCH BUTTON & "NO RESULTS" MESSAGE
-      const noResultsMessage = document.createElement("div");
-      const searchContainer = document.createElement("div");
-      const searchBox = document.createElement("input");
-      const clearSearchBtn = document.createElement("button");
+      if (
+        !staticElements ||
+        !popupTitle ||
+        !searchContainer ||
+        !searchBox ||
+        !clearSearchBtn ||
+        !noResultsMessage
+      ) {
+        throw new Error("One of the search popup static elements is missing.");
+      }
 
-      noResultsMessage.id = "no-results-msg";
-      searchContainer.classList.add("search-container");
-      searchBox.classList.add("search-box");
-
-      noResultsMessage.textContent = isLtr ? "No results" : "لا توجد نتائج";
-      searchBox.type = "text";
-      searchBox.placeholder = isLtr
-        ? "Search menu categories"
-        : "ابحث في اصناف القائمة";
-      searchBox.ariaLabel = isLtr // <-- aria-label IMPROVES THE EXPERIENCE FOR USERS WHO RELY ON SCREEN READERS
-        ? "Search menu categories"
-        : "ابحث في اصناف القائمة";
-      clearSearchBtn.innerHTML = "↻";
-      clearSearchBtn.ariaLabel = "Clear search";
-
-      searchContainer.append(searchBox, clearSearchBtn);
-
-      // CREATE NAVIGATION LINKS CONTAINER
+      // CREATE DYNAMIC ELEMENTS
+      // - CREATE NAVIGATION LINKS CONTAINER
       const navLinks = document.createElement("nav");
       navLinks.className = "hide-scrollbar";
 
-      // CREATE MENU LINKS WITH SECTION INFO (NAME & ITEM COUNT)
+      // - CREATE MENU LINKS WITH SECTION INFO (NAME & ITEM COUNT)
       const linksFragment = document.createDocumentFragment(); // <-- IMPROVE PERFORMANCE BY USING "DocumentFragment"
       const cleanText = (text) =>
         text.replace(/[^\p{L}\p{N}]+/gu, "").toLowerCase(); // <-- FUNCTION THAT CLEANS TEXT FROM SPACES & SYMBOLS IN ORDER TO IMPROVE SEARCH ACCURACY
@@ -485,7 +472,9 @@ function categoriesSection() {
         link.dataset.cleanText = cleanText(secName);
         nameSpan.textContent = secName;
         countSpan.textContent = `${itemCount} ${
-          isLtr ? `item${itemCount > 1 ? "s" : ""}` : ":العناصر"
+          document.dir === "ltr"
+            ? `item${itemCount > 1 ? "s" : ""}`
+            : ":العناصر"
         }`;
 
         link.append(nameSpan, countSpan);
@@ -529,22 +518,22 @@ function categoriesSection() {
 
       // RETURN THE CONFIGURED CONTENT & ELEMENTS FOR THE POPUP
       return {
-        containerClass: "category-menu",
+        containerClass: "categories-search",
         arrOfContainerContent: [popupTitle, searchContainer, navLinks],
         scrollElement: navLinks,
       };
     })();
 
-    // CREATE A POPUP INSTANCE FOR THE CATEGORY LINKS MENU
-    const categoryLinksMenu = popup(popupContent);
+    // CREATE A POPUP INSTANCE FOR THE CATEGORIES SEARCH POPUP
+    const categoriesSearchPopup = popup(popupContent);
 
     // ADD LISTENERS
-    // - OPEN THE CATEGORY MENU POPUP WHEN CLICKING ON CATEGORY SEARCH BUTTON
-    searchBtn.onclick = categoryLinksMenu.open;
+    // - OPEN THE CATEGORIES SEARCH POPUP WHEN CLICKING ON SEARCH BUTTON
+    searchBtn.onclick = categoriesSearchPopup.open;
 
-    // - CLOSE THE CATEGORY MENU POPUP WHEN CLICKING ON ANY NAVIGATION LINK INSIDE IT
+    // - CLOSE THE CATEGORIES SEARCH POPUP WHEN CLICKING ON ANY NAVIGATION LINK INSIDE IT
     popupContent.scrollElement.onclick = (e) => {
-      if (e.target.closest("a")) categoryLinksMenu.close();
+      if (e.target.closest("a")) categoriesSearchPopup.close();
     };
   };
 

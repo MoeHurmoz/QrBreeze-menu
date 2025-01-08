@@ -46,6 +46,7 @@
   --b-radius-full: 9999px;
 
   /* - DIMENSIONS */
+  --space-xs: 0.437rem;
   --space-sm: 0.625rem;
   --space: 1.25rem;
   --main-header-height: 5rem; /* <-- MAIN-HEADER & CATEGORIES-SECTION DEPEND ON THIS VARIABLE, TO BE STICKY ON TOP OF EACH OTHER */
