@@ -140,7 +140,7 @@ function activateSlider({
     };
   };
 
-  // FUNCTION THAT ENABLES MOVING THE IMAGES BY SWIPING RIGHT OR LEFT USING THE HAMMER.JS LIBRARY
+  // FUNCTION THAT ENABLES MOVING THE IMAGES BY SWIPING RIGHT OR LEFT
   const enableGestures = () => {
     const slider = document.querySelector(sliderSelector);
 
@@ -149,8 +149,9 @@ function activateSlider({
       return;
     }
 
-    const hammer = new Hammer(slider);
     const isLtr = document.dir === "ltr";
+    let startX = 0;
+    let endX = 0;
 
     const goToTheImage = (direction = "next") => {
       updateActiveImageIndex(direction);
@@ -158,14 +159,28 @@ function activateSlider({
       manageAutoSliding("pause");
     };
 
-    // ADD LISTENERS
-    if (isLtr) {
-      hammer.on("swipeleft", () => goToTheImage("next"));
-      hammer.on("swiperight", () => goToTheImage("prev"));
-    } else {
-      hammer.on("swipeleft", () => goToTheImage("prev"));
-      hammer.on("swiperight", () => goToTheImage("next"));
-    }
+    // ADD TOUCH EVENT LISTENERS TO HANDLE SWIPE GESTURES
+    slider.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX; // <-- RECORD THE INITIAL TOUCH POSITION (X-COORDINATE)
+    });
+
+    slider.addEventListener("touchmove", (e) => {
+      endX = e.touches[0].clientX; // <-- CONTINUOUSLY RECORD THE CURRENT TOUCH POSITION DURING SWIPE
+    });
+
+    slider.addEventListener("touchend", () => {
+      const deltaX = endX - startX;
+
+      // MINIMUM SWIPE DISTANCE REQUIRED TO TRIGGER A SLIDE (50PX, CHOSEN AS A REASONABLE THRESHOLD FOR USER SWIPE)
+      if (Math.abs(deltaX) > 50) {
+        // IN LTR: SWIPE LEFT MOVES TO NEXT, SWIPE RIGHT MOVES TO PREVIOUS (REVERSED FOR RTL)
+        if (deltaX < 0) {
+          isLtr ? goToTheImage("next") : goToTheImage("prev");
+        } else {
+          isLtr ? goToTheImage("prev") : goToTheImage("next");
+        }
+      }
+    });
   };
 
   // INITIALIZE SLIDER
@@ -182,117 +197,181 @@ function activateSlider({
 function popup({
   containerClass,
   arrOfContainerContent,
-  scrollElement = undefined, // <-- TODO: NOT USED YET
+  scrollElement = undefined,
 }) {
   const popup = document.getElementById("popup");
-  const contentContainer = popup.querySelector(".popup-content-container");
+  const contentContainer = popup?.querySelector(".popup-content-container");
   const closeBtn = document.getElementById("close-btn");
 
-  let isClosing = false;
-  let isDragging = false;
+  if (!popup || !contentContainer || !closeBtn) {
+    throw new Error(
+      "One or more required elements are missing: 'popup', 'popup-content-container', or 'close-btn'."
+    );
+  }
 
-  const handleClose = () => {
-    if (isClosing) return;
-
-    isClosing = true;
-    document.body.style.overflow = "";
-    popup.classList.remove("active");
-
-    // LISTEN FOR THE TRANSITION END BEFORE REMOVING CONTENT
-    const handleTransitionEnd = () => {
-      contentContainer.classList.remove(containerClass);
-      while (
-        contentContainer.lastChild &&
-        contentContainer.lastChild !== closeBtn
-      ) {
-        contentContainer.removeChild(contentContainer.lastChild);
-      }
-      isClosing = false;
-      isDragging = false;
-      contentContainer.style.transform = "";
-      contentContainer.removeEventListener(
-        "transitionend",
-        handleTransitionEnd
-      );
-    };
-
-    contentContainer.addEventListener("transitionend", handleTransitionEnd, {
-      once: true,
-    });
+  const state = {
+    isClosing: false,
+    isDragging: false,
+    startY: 0,
   };
 
-  const handleDrag = (() => {
-    let startY = 0;
-
-    const onStart = (e) => {
-      if (isClosing) return;
-      isDragging = true;
-      startY = e.center.y;
-      contentContainer.style.transition = "none";
-    };
-
-    const onMove = (e) => {
-      if (!isDragging || isClosing) return;
-
-      const deltaY = e.center.y - startY;
-
-      // ONLY APPLY TRANSFORM FOR DOWNWARD MOVEMENT
-      if (deltaY > 0) {
-        contentContainer.style.transform = `translateY(${deltaY}px)`;
+  const handlers = {
+    clickOnPopup: (e) => {
+      // CLOSE THE POPUP IF CLICKING ON THE BACKGROUND OR THE CLOSE BUTTON
+      if (e.target === popup || e.target === closeBtn) {
+        handlers.closePopup();
       }
-    };
+    },
 
-    const onEnd = (e) => {
-      if (!isDragging || isClosing) return;
-      isDragging = false;
+    closePopup: () => {
+      if (state.isClosing) return; // <-- PREVENT MULTIPLE CALLS IF ALREADY CLOSING
 
-      const deltaY = e.center.y - startY;
-      const velocity = e.velocityY;
+      state.isClosing = true;
 
+      // MOVE THE "contentContainer" OFFSCREEN (DOWNWARD) TO HIDE IT
+      contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
+
+      // REMOVE THE "active" CLASS FROM THE POPUP TO CLOSE IT
+      popup.classList.remove("active");
+
+      // ENABLE PAGE SCROLLING AGAIN
+      document.body.style.overflow = "";
+
+      // CLEAN UP THE CONTENT INSIDE "contentContainer"
+      const handleTransitionEnd = () => {
+        contentContainer.classList.remove(containerClass);
+        contentContainer.innerHTML = ""; // <-- CLEAR ALL CONTENT INSIDE THE CONTAINER
+        contentContainer.appendChild(closeBtn); // <-- RE-ADD THE CLOSE BUTTON
+        contentContainer.style.transform = ""; // <-- RESET TRANSFORM STYLES
+
+        // RESET CLOSING & DRAGGING STATE
+        state.isClosing = false;
+        state.isDragging = false;
+
+        // REMOVE EVENT LISTENER TO AVOID MEMORY LEAKS
+        contentContainer.removeEventListener(
+          "transitionend",
+          handleTransitionEnd
+        );
+      };
+
+      // LISTEN FOR THE TRANSITION END EVENT BEFORE CLEAN UP THE CONTENT
+      contentContainer.addEventListener("transitionend", handleTransitionEnd, {
+        once: true, // <-- ENSURE LISTENER RUNS ONLY ONCE
+      });
+    },
+
+    touchStart: (e) => {
+      if (state.isClosing) return; // <-- PREVENT MULTIPLE CALLS IF ALREADY CLOSING
+
+      // UPDATE DRAGGING & START-Y STATE
+      state.isDragging = true;
+      state.startY = e.touches[0]?.clientY; // <-- STORE THE INITIAL VERTICAL POSITION OF THE TOUCH EVENT FOR DRAG CALCULATION
+
+      // DISABLE TRANSITION EFFECT DURING DRAG TO AVOID UNWANTED ANIMATIONS
+      contentContainer.style.transition = "none";
+    },
+
+    touchMove: (e) => {
+      if (state.isClosing || !state.isDragging) return; // <-- PREVENT MULTIPLE CALLS IF ALREADY CLOSING OR IF NOT DRAGGING
+
+      e.preventDefault(); // <-- PREVENT DEFAULT SCROLL BEHAVIOR TO AVOID PAGE SCROLLING DURING TOUCH MOVEMENT
+
+      const currentY = e.touches[0]?.clientY;
+      const deltaY = currentY - state.startY;
+
+      // APPLY TRANSFORM ONLY IF MOVEMENT IS DOWNWARD (POSITIVE deltaY)
+      if (deltaY > 0) {
+        contentContainer.style.transform = `translateY(${deltaY}px)`; // <-- MOVE THE "contentContainer" VERTICALLY TO A NEW POSITION BASED ON THE DOWNWARD DRAG DISTANCE (deltaY)
+      }
+    },
+
+    touchEnd: (e) => {
+      if (state.isClosing || !state.isDragging) return; // <-- PREVENT MULTIPLE CALLS IF ALREADY CLOSING OR IF NOT DRAGGING
+
+      const endY = e.changedTouches[0]?.clientY;
+      const deltaY = endY - state.startY;
+
+      // RESET THE TRANSITION STYLE TO ENABLE SMOOTH TRANSITIONS AFTER THE DRAG ENDS
       contentContainer.style.transition = "";
 
-      // ONLY CHECK FOR DOWNWARD MOVEMENT
-      if (deltaY > 100 || (velocity > 0.3 && deltaY > 0)) {
-        contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
-        handleClose();
+      // RESET DRAGGING STATE
+      state.isDragging = false;
+
+      // IF DRAG DISTANCE IS LARGE ENOUGH
+      if (deltaY > 100 || (deltaY > 0 && Math.abs(deltaY) / 100 > 0.3)) {
+        handlers.closePopup(); // <-- CLOSE THE POPUP
       } else {
-        contentContainer.style.transform = "";
+        contentContainer.style.transform = ""; // <-- RESET THE CONTAINER POSITION IF THE DRAG DISTANCE IS INSUFFICIENT TO CLOSE THE POPUP
       }
-    };
+    },
 
-    return { onStart, onMove, onEnd };
-  })();
+    touchOnScrollElement: (e) => {
+      e.stopPropagation(); // <-- DISABLE DRAG GESTURE FROM "scrollElement"
+    },
+  };
 
-  // EVENT LISTENER TO CLOSE THE POPUP WHEN CLICKING ON THE BACKGROUND OR THE CLOSE BUTTON
-  popup.addEventListener("click", (e) => {
-    if (e.target === popup || e.target === closeBtn) {
-      contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
-      handleClose();
-    }
-  });
+  const events = {
+    // ADD ALL EVENTS RELATED TO THE POPUP
+    add: () => {
+      try {
+        popup.addEventListener("click", handlers.clickOnPopup);
 
-  // SETUP HAMMER.JS LIBRARY
-  const hammer = new Hammer(contentContainer);
-  hammer.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL });
+        scrollElement?.addEventListener(
+          "touchstart",
+          handlers.touchOnScrollElement
+        );
 
-  hammer.on("panstart", handleDrag.onStart);
-  hammer.on("panmove", handleDrag.onMove);
-  hammer.on("panend pancancel", handleDrag.onEnd);
+        // SETUP EVENT LISTENERS FOR GESTURE HANDLING
+        contentContainer.addEventListener("touchstart", handlers.touchStart, {
+          passive: true, // <-- "touchstart" IS PASSIVE BECAUSE WE DON'T NEED TO PREVENT DEFAULT SCROLLING BEHAVIOR DURING THE TOUCH START
+        });
+        contentContainer.addEventListener("touchmove", handlers.touchMove, {
+          passive: false, // <-- "touchmove" IS NON-PASSIVE TO ALLOW PREVENTING DEFAULT SCROLLING BEHAVIOR WHILE DRAGGING
+        });
+        contentContainer.addEventListener("touchend", handlers.touchEnd, {
+          passive: true, // <-- "touchend" IS PASSIVE AS WE DON'T NEED TO PREVENT DEFAULT BEHAVIOR AFTER TOUCH ENDS
+        });
+      } catch (error) {
+        console.error("Error adding popup events:", error);
+      }
+    },
+
+    // REMOVE ALL EVENTS RELATED TO THE POPUP
+    remove: () => {
+      try {
+        popup.removeEventListener("click", handlers.clickOnPopup);
+
+        scrollElement?.removeEventListener(
+          "touchstart",
+          handlers.touchOnScrollElement
+        );
+
+        contentContainer.removeEventListener("touchstart", handlers.touchStart);
+        contentContainer.removeEventListener("touchmove", handlers.touchMove);
+        contentContainer.removeEventListener("touchend", handlers.touchEnd);
+      } catch (error) {
+        console.error("Error removing popup events:", error);
+      }
+    },
+  };
 
   // RETURNS THE API TO CONTROL OPENING & CLOSING THE POPUP
   return {
     open: () => {
-      isClosing = false;
-      isDragging = false;
+      state.isClosing = false;
+      state.isDragging = false;
       contentContainer.style.transform = "";
-      document.body.style.overflow = "hidden"; /* <-- PREVENTS SCROLLING */
+      document.body.style.overflow =
+        "hidden"; /* <-- PREVENTS SCROLLING IN THE PAGE*/
       popup.classList.add("active");
       contentContainer.classList.add(containerClass);
       contentContainer.append(...arrOfContainerContent);
+      events.add();
     },
     close: () => {
-      contentContainer.style.transform = `translateY(${window.innerHeight}px)`;
-      handleClose();
+      handlers.closePopup();
+      events.remove();
     },
   };
 }
