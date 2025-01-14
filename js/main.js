@@ -621,7 +621,25 @@ function categoriesSection() {
 
     // - CLOSE THE CATEGORIES SEARCH POPUP WHEN CLICKING ON ANY NAVIGATION LINK INSIDE IT
     popupContent.scrollElement.onclick = (e) => {
-      if (e.target.closest("a")) categoriesSearchPopup.close();
+      const clickedLink = e.target.closest("a");
+
+      if (clickedLink) {
+        document.activeElement.blur(); // <-- BLUR ANY ACTIVE INPUT FIELD TO CLOSE THE KEYBOARD
+        categoriesSearchPopup.close(); // <-- CLOSE THE CATEGORIES SEARCH POPUP
+
+        // SCROLL TO THE TARGET SECTION
+        const targetId = clickedLink.getAttribute("href").slice(1);
+        const targetElement = Array.from(foodSections).find(
+          (section) => section.id === targetId
+        );
+
+        if (targetElement) {
+          // ADD A SMALL DELAY TO ENSURE ACCURATE SCROLLING TO THE TARGET SECTION
+          setTimeout(() => {
+            targetElement.scrollIntoView({ behavior: "smooth" });
+          }, 50);
+        }
+      }
     };
   };
 
