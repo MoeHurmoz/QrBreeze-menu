@@ -159,28 +159,37 @@ function activateSlider({
       manageAutoSliding("pause");
     };
 
-    // ADD TOUCH EVENT LISTENERS TO HANDLE SWIPE GESTURES
-    slider.addEventListener("touchstart", (e) => {
-      startX = e.touches[0].clientX; // <-- RECORD THE INITIAL TOUCH POSITION (X-COORDINATE)
-    });
+    const handlers = {
+      touchStart: (e) => {
+        startX = e.touches[0].clientX; // <-- RECORD THE INITIAL TOUCH POSITION (X-COORDINATE)
+        endX = startX; // <-- RESET END POSITION
+      },
 
-    slider.addEventListener("touchmove", (e) => {
-      endX = e.touches[0].clientX; // <-- CONTINUOUSLY RECORD THE CURRENT TOUCH POSITION DURING SWIPE
-    });
+      touchMove: (e) => {
+        endX = e.touches[0].clientX; // <-- CONTINUOUSLY RECORD THE CURRENT TOUCH POSITION DURING SWIPE
+      },
 
-    slider.addEventListener("touchend", () => {
-      const deltaX = endX - startX;
+      touchEnd: () => {
+        const deltaX = endX - startX;
 
-      // MINIMUM SWIPE DISTANCE REQUIRED TO TRIGGER A SLIDE (50PX, CHOSEN AS A REASONABLE THRESHOLD FOR USER SWIPE)
-      if (Math.abs(deltaX) > 50) {
-        // IN LTR: SWIPE LEFT MOVES TO NEXT, SWIPE RIGHT MOVES TO PREVIOUS (REVERSED FOR RTL)
-        if (deltaX < 0) {
-          isLtr ? goToTheImage("next") : goToTheImage("prev");
-        } else {
-          isLtr ? goToTheImage("prev") : goToTheImage("next");
+        // MINIMUM SWIPE DISTANCE REQUIRED TO TRIGGER A SLIDE (50PX, CHOSEN AS A REASONABLE THRESHOLD FOR USER SWIPE)
+        if (Math.abs(deltaX) > 50) {
+          // IN LTR: SWIPE LEFT MOVES TO NEXT, SWIPE RIGHT MOVES TO PREVIOUS (REVERSED FOR RTL)
+          if (deltaX < 0) {
+            isLtr ? goToTheImage("next") : goToTheImage("prev");
+          } else {
+            isLtr ? goToTheImage("prev") : goToTheImage("next");
+          }
         }
-      }
-    });
+      },
+    };
+
+    // SETUP EVENT LISTENERS FOR GESTURE HANDLING
+    const passive = { passive: true }; // <-- IMPROVES PERFORMANCE BY ALLOWING THE BROWSER TO HANDLE TOUCH EVENTS WITHOUT WAITING FOR preventDefault()
+
+    slider.addEventListener("touchstart", handlers.touchStart, passive);
+    slider.addEventListener("touchmove", handlers.touchMove, passive);
+    slider.addEventListener("touchend", handlers.touchEnd, passive);
   };
 
   // INITIALIZE SLIDER
@@ -298,8 +307,8 @@ function popup({
       // RESET DRAGGING STATE
       state.isDragging = false;
 
-      // IF DRAG DISTANCE IS LARGE ENOUGH
-      if (deltaY > 100 || (deltaY > 0 && Math.abs(deltaY) / 100 > 0.3)) {
+      // IF DRAG DISTANCE IS LARGE ENOUGH (LARGER THAN 80px)
+      if (deltaY > 80) {
         handlers.closePopup(); // <-- CLOSE THE POPUP
       } else {
         contentContainer.style.transform = ""; // <-- RESET THE CONTAINER POSITION IF THE DRAG DISTANCE IS INSUFFICIENT TO CLOSE THE POPUP
