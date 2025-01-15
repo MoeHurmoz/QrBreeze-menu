@@ -45,8 +45,8 @@
 #popup .popup-content-container #close-btn {
   position: absolute;
   top: 0.5rem;
-  inset-inline-end: 0.5rem;
-  padding: 1rem;
+  inset-inline-end: 0.5rem; /* <-- THIS VALUE WILL BE OVERRIDDEN BELOW IN DISH DETAILS POPUP STYLES */
+  padding: 1rem; /* <-- THIS VALUE WILL BE OVERRIDDEN BELOW IN DISH DETAILS POPUP STYLES */
   border-radius: var(--b-radius-full);
 }
 
@@ -61,7 +61,7 @@
 }
 
 #popup .popup-content-container #close-btn > svg {
-  width: 13px;
+  width: 13px; /* <-- ICON SIZE  */
 }
 
 /* - ACTIVATION */
@@ -193,12 +193,8 @@
 
 /* - OVERRIDES FOR THE DISH DETAILS POPUP CLOSE BUTTON */
 #popup .dish-details #close-btn {
-  inset-inline-end: 0.4rem; /* <-- ADJUSTS THE POSITION */
-  padding: 0.2rem 0.3rem; /* <-- CUSTOMIZES THE PADDING */
-}
-
-#popup .dish-details #close-btn > svg {
-  width: 11px;
+  inset-inline-end: 0.4rem; /* <-- ADJUSTS THE POSITION SPECIFICALLY FOR DISH DETAILS POPUP */
+  padding: 0.2rem 0.3rem 0.15rem; /* <-- CUSTOMIZES THE PADDING SPECIFICALLY FOR DISH DETAILS POPUP */
 }
 
 #popup .dish-details .details-container {
