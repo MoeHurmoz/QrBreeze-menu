@@ -2,9 +2,7 @@
 
 ## Overview
 
-This repository contains the source code for a digital menu designed for QrBreeze, a service that offers different types of QR codes to users.
-
-This digital menu is accessed via QR code, and is for displaying items only, not an application through which to purchase.
+This repository contains the source code for a digital menu developed for QrBreeze, a service that provides various types of QR codes to users. The digital menu is accessible via a QR code and is intended solely for displaying items, not for making purchases.
 
 ## Features
 
